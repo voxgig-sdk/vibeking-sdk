@@ -1,0 +1,72 @@
+<?php
+declare(strict_types=1);
+
+// Vibeking SDK utility registration
+
+require_once __DIR__ . '/../core/UtilityType.php';
+require_once __DIR__ . '/Clean.php';
+require_once __DIR__ . '/Done.php';
+require_once __DIR__ . '/MakeError.php';
+require_once __DIR__ . '/FeatureAdd.php';
+require_once __DIR__ . '/FeatureHook.php';
+require_once __DIR__ . '/FeatureInit.php';
+require_once __DIR__ . '/Fetcher.php';
+require_once __DIR__ . '/MakeFetchDef.php';
+require_once __DIR__ . '/MakeContext.php';
+require_once __DIR__ . '/MakeOptions.php';
+require_once __DIR__ . '/MakeRequest.php';
+require_once __DIR__ . '/MakeResponse.php';
+require_once __DIR__ . '/MakeResult.php';
+require_once __DIR__ . '/MakePoint.php';
+require_once __DIR__ . '/MakeSpec.php';
+require_once __DIR__ . '/MakeUrl.php';
+require_once __DIR__ . '/Param.php';
+require_once __DIR__ . '/PrepareAuth.php';
+require_once __DIR__ . '/PrepareBody.php';
+require_once __DIR__ . '/Graphql.php';
+require_once __DIR__ . '/PrepareHeaders.php';
+require_once __DIR__ . '/PrepareMethod.php';
+require_once __DIR__ . '/PrepareParams.php';
+require_once __DIR__ . '/PreparePath.php';
+require_once __DIR__ . '/PrepareQuery.php';
+require_once __DIR__ . '/ResultBasic.php';
+require_once __DIR__ . '/ResultBody.php';
+require_once __DIR__ . '/ResultHeaders.php';
+require_once __DIR__ . '/TransformRequest.php';
+require_once __DIR__ . '/TransformResponse.php';
+
+VibekingUtility::setRegistrar(function (VibekingUtility $u): void {
+    $u->clean = [VibekingClean::class, 'call'];
+    $u->clean_add = [VibekingClean::class, 'add'];
+    $u->clean_explain = [VibekingDone::class, 'clean_explain'];
+    $u->done = [VibekingDone::class, 'call'];
+    $u->make_error = [VibekingMakeError::class, 'call'];
+    $u->feature_add = [VibekingFeatureAdd::class, 'call'];
+    $u->feature_hook = [VibekingFeatureHook::class, 'call'];
+    $u->feature_init = [VibekingFeatureInit::class, 'call'];
+    $u->fetcher = [VibekingFetcher::class, 'call'];
+    $u->make_fetch_def = [VibekingMakeFetchDef::class, 'call'];
+    $u->make_context = [VibekingMakeContext::class, 'call'];
+    $u->make_options = [VibekingMakeOptions::class, 'call'];
+    $u->make_request = [VibekingMakeRequest::class, 'call'];
+    $u->make_response = [VibekingMakeResponse::class, 'call'];
+    $u->make_result = [VibekingMakeResult::class, 'call'];
+    $u->make_point = [VibekingMakePoint::class, 'call'];
+    $u->make_spec = [VibekingMakeSpec::class, 'call'];
+    $u->make_url = [VibekingMakeUrl::class, 'call'];
+    $u->param = [VibekingParam::class, 'call'];
+    $u->prepare_auth = [VibekingPrepareAuth::class, 'call'];
+    $u->prepare_body = [VibekingPrepareBody::class, 'call'];
+    $u->prepare_headers = [VibekingPrepareHeaders::class, 'call'];
+    $u->prepare_method = [VibekingPrepareMethod::class, 'call'];
+    $u->prepare_params = [VibekingPrepareParams::class, 'call'];
+    $u->prepare_path = [VibekingPreparePath::class, 'call'];
+    $u->prepare_query = [VibekingPrepareQuery::class, 'call'];
+    $u->graphql_body = [VibekingGraphql::class, 'body'];
+    $u->graphql_errors = [VibekingGraphql::class, 'errors'];
+    $u->result_basic = [VibekingResultBasic::class, 'call'];
+    $u->result_body = [VibekingResultBody::class, 'call'];
+    $u->result_headers = [VibekingResultHeaders::class, 'call'];
+    $u->transform_request = [VibekingTransformRequest::class, 'call'];
+    $u->transform_response = [VibekingTransformResponse::class, 'call'];
+});

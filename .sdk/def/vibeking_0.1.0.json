@@ -1,0 +1,420 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "VibeKing Public API",
+    "description": "Read-only public API for VibeKing — a directory and leaderboard of AI-built (vibe-coded) products. No authentication required.",
+    "version": "1.1.0",
+    "contact": {
+      "name": "VibeKing",
+      "url": "https://vibeking.fun"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://vibeking.fun",
+      "description": "Production"
+    }
+  ],
+  "paths": {
+    "/api/products": {
+      "get": {
+        "operationId": "listProducts",
+        "summary": "List all approved products",
+        "description": "Returns approved products as structured JSON, ordered by upvotes (descending) or recency. CORS-enabled, no API key. Paginate with limit + offset, or pass limit=all for the entire directory in one response. Filter server-side with search, category and ai_tool; sort with sort=new.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Rows per response. An integer 1-500 (values outside the range clamp to 500), or the literal 'all' to return the whole directory (~3 MB).",
+            "schema": {
+              "type": "string",
+              "default": "500",
+              "example": "100"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Rows to skip. Page by adding count to offset until offset >= total.",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Keyword filter matched case-insensitively against name, tagline and description. Max 80 chars. q is accepted as an alias.",
+            "schema": {
+              "type": "string",
+              "maxLength": 80
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "description": "Exact category label, case-insensitive (e.g. 'AI Coding', 'Dev Tools'). Omit or pass 'All' for no filter.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ai_tool",
+            "in": "query",
+            "required": false,
+            "description": "Substring filter, case-insensitive, on the AI tool the product was built with (e.g. 'cursor', 'claude'). built_with is accepted as an alias.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "'top' (upvotes descending, default) or 'new' (newest first).",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "top",
+                "new"
+              ],
+              "default": "top"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON envelope with the product list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "total": {
+                      "type": "integer",
+                      "description": "Approved products matching the active filters — the whole directory when no filter is set."
+                    },
+                    "count": {
+                      "type": "integer",
+                      "description": "Rows returned in this response."
+                    },
+                    "offset": {
+                      "type": "integer",
+                      "description": "Rows skipped."
+                    },
+                    "filters": {
+                      "type": "object",
+                      "description": "Echo of the filters this response applied. Null fields mean no filter.",
+                      "properties": {
+                        "search": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "category": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "ai_tool": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "sort": {
+                          "type": "string",
+                          "enum": [
+                            "top",
+                            "new"
+                          ]
+                        }
+                      }
+                    },
+                    "liveness": {
+                      "type": "object",
+                      "description": "Aggregate URL-liveness counts across the whole directory, from scheduled re-probes of every listed product URL.",
+                      "properties": {
+                        "live": {
+                          "type": "integer"
+                        },
+                        "at_risk": {
+                          "type": "integer"
+                        },
+                        "dead": {
+                          "type": "integer"
+                        },
+                        "unchecked": {
+                          "type": "integer",
+                          "description": "Not probed yet."
+                        }
+                      }
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Product"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "operationId": "getProduct",
+        "summary": "Get one product by id",
+        "description": "Returns a single approved product as structured JSON. Unknown or unapproved ids return a JSON 404.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Numeric product id, as returned by /api/products.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The product.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No approved product with that id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/list": {
+      "get": {
+        "operationId": "paginatedList",
+        "summary": "Paginated product list (trending or newest), optionally filtered by category",
+        "description": "Returns a page of products as pre-rendered HTML rows plus pagination metadata. Used by the \"Load more\" UI; useful to agents for paging through the directory by sort order and category.",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "Sort order. 'trending' (recent 7-day upvote momentum, default), 'new' (by recency) or 'top' (lifetime upvotes).",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "trending",
+                "new",
+                "top"
+              ],
+              "default": "trending"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "description": "Category label to filter by (e.g. 'Dev Tools', 'SaaS', 'AI Coding', 'Productivity', 'Design'). Omit or use 'All' for no filter.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number, starting at 1. Page size is 30.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of rendered rows plus pagination metadata.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/search": {
+      "get": {
+        "operationId": "searchProducts",
+        "summary": "Search products by keyword",
+        "description": "Full-text-ish search (matches name, tagline, and description) returning a page of pre-rendered HTML rows plus pagination metadata.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "Search query (max 80 chars). An empty query returns an empty result set.",
+            "schema": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "example": "love"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number, starting at 1. Page size is 30.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of matching rendered rows plus pagination metadata.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Product": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tagline": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The product's real external URL."
+          },
+          "maker": {
+            "type": "string"
+          },
+          "ai_tool": {
+            "type": "string",
+            "description": "The AI tool used to build the product."
+          },
+          "category": {
+            "type": "string"
+          },
+          "upvotes": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": "string"
+          }
+        }
+      },
+      "ListResponse": {
+        "type": "object",
+        "properties": {
+          "html": {
+            "type": "string",
+            "description": "Pre-rendered HTML rows for this page."
+          },
+          "count": {
+            "type": "integer",
+            "description": "Number of products returned in this page."
+          },
+          "page": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of products matching the query."
+          },
+          "hasMore": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SearchResponse": {
+        "type": "object",
+        "properties": {
+          "html": {
+            "type": "string",
+            "description": "Pre-rendered HTML rows for this page."
+          },
+          "count": {
+            "type": "integer"
+          },
+          "page": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "hasMore": {
+            "type": "boolean"
+          },
+          "q": {
+            "type": "string",
+            "description": "The echoed search query."
+          }
+        }
+      }
+    }
+  }
+}

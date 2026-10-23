@@ -1,0 +1,23 @@
+{
+  "files": [
+    "SUMMARY.md"
+  ],
+  "config": ".sdk/doc/qa/vale.ini",
+  "routes": {},
+  "quoted": {
+    "SUMMARY.md": [
+      "A JSON envelope with the product list.",
+      "A page of matching rendered rows plus pagination metadata",
+      "A page of rendered rows plus pagination metadata",
+      "Number of products returned in this page.",
+      "Pre-rendered HTML rows for this page.",
+      "Production",
+      "Read-only public API for VibeKing, a directory and leaderboard of AI-built (vibe-coded) products. No authentication required.",
+      "The AI tool used to build the product.",
+      "The echoed search query.",
+      "The product",
+      "The product&#39;s real external URL.",
+      "Total number of products matching the query."
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "existing": {
+    "list": {
+      "LIST00": {
+        "count": 50,
+        "hasMore": false,
+        "html": "s34",
+        "page": 53,
+        "total": 54,
+        "id": "LIST00"
+      },
+      "LIST01": {
+        "count": 100,
+        "hasMore": false,
+        "html": "s66",
+        "page": 103,
+        "total": 104,
+        "id": "LIST01"
+      },
+      "LIST02": {
+        "count": 150,
+        "hasMore": false,
+        "html": "s98",
+        "page": 153,
+        "total": 154,
+        "id": "LIST02"
+      }
+    }
+  },
+  "new": {
+    "list": {
+      "list_ref01": {
+        "count": 200,
+        "hasMore": false,
+        "html": "sca",
+        "page": 203,
+        "total": 204
+      }
+    }
+  },
+  "requests": {
+    "GET /api/list": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    }
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "existing": {
+    "product": {
+      "PRODUCT00": {
+        "ai_tool": "s64",
+        "category": "s65",
+        "created_at": "s66",
+        "description": "s67",
+        "id": "PRODUCT00",
+        "maker": "s69",
+        "name": "s6a",
+        "tagline": "s6b",
+        "upvotes": 108,
+        "url": "s6d"
+      },
+      "PRODUCT01": {
+        "ai_tool": "sc8",
+        "category": "sc9",
+        "created_at": "sca",
+        "description": "scb",
+        "id": "PRODUCT01",
+        "maker": "scd",
+        "name": "sce",
+        "tagline": "scf",
+        "upvotes": 208,
+        "url": "sd1"
+      },
+      "PRODUCT02": {
+        "ai_tool": "s12c",
+        "category": "s12d",
+        "created_at": "s12e",
+        "description": "s12f",
+        "id": "PRODUCT02",
+        "maker": "s131",
+        "name": "s132",
+        "tagline": "s133",
+        "upvotes": 308,
+        "url": "s135"
+      }
+    }
+  },
+  "new": {
+    "product": {
+      "product_ref01": {
+        "ai_tool": "s190",
+        "category": "s191",
+        "created_at": "s192",
+        "description": "s193",
+        "maker": "s195",
+        "name": "s196",
+        "tagline": "s197",
+        "upvotes": 408,
+        "url": "s199"
+      }
+    }
+  },
+  "requests": {
+    "GET /api/products": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    },
+    "GET /api/products/{id}": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    }
+  }
+}
